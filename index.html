@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        canvas {
+            border: dashed 1px #000000;
+        }
+    </style>
+</head>
+<body>
+    <input id="xPosition" type="number" onchange="updateSun()" value="100">
+    <input id="yPosition" type="number" onchange="updateSun()" value="200">
+    <input id="radius" type="number" onchange="updateSun()" value="50">
+    <input id="color" type="text" onchange="updateSun()" value="yellow">
+    <button onclick="move()">Start</button>
+    <br/>
+    <canvas id="myCanvas" width="600px" height="600px"></canvas>
+
+    <script>
+        const DIRECTION_RIGHT = 1;
+        const DIRECTION_LEFT = 2;
+        //Declare a class
+        function Sun(x, y, radius, color) {
+            //Properties
+            this.x = x;
+            this.y = y;
+            this.radius = radius;
+            this.color = color;
+            this.direction = DIRECTION_RIGHT;
+
+            //Method
+            this.render = function (canvas) {
+                var context = canvas.getContext('2d');
+                context.clearRect(0, 0, 600, 600);
+                context.beginPath();
+                context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+                context.fillStyle = this.color;
+                context.fill();
+            };
+
+            this.move = function () {
+                if(this.direction === DIRECTION_RIGHT){
+                    this.x += 10;
+                    if(this.x >= 600 - 10 - this.radius){
+                        this.direction = DIRECTION_LEFT;
+                    }
+                }
+                else {
+                    this.x -= 10;
+                    if(this.x < 10 + this.radius){
+                        this.direction = DIRECTION_RIGHT;
+                    }
+                }
+            };
+
+            //Setters
+            this.setX = function (x) {
+                this.x = x;
+            };
+
+            this.setY = function (y) {
+                this.y = y;
+            };
+
+            this.setRadius = function (radius) {
+                this.radius = radius;
+            };
+
+            this.setColor = function (color) {
+                this.color = color;
+            };
+        }
+
+        var x = 100;
+        var y = 200;
+        var radius = 50;
+        var color = 'yellow';
+
+        //Create an object
+        var sun = new Sun(x, y, radius, color);
+        var canvas = document.getElementById('myCanvas');
+
+        //Call a method
+        sun.render(canvas);
+
+        function updateSun() {
+            var x = document.getElementById('xPosition').value;
+            var y = document.getElementById('yPosition').value;
+            var radius = document.getElementById('radius').value;
+            var color = document.getElementById('color').value;
+
+            sun.setX(x);
+            sun.setY(y);
+            sun.setRadius(radius);
+            sun.setColor(color);
+
+            sun.render(canvas);
+        }
+
+        function move() {
+            setInterval(function () {
+                sun.move();
+                sun.render(canvas);
+            }, 10);
+        }
+
+    </script>
+</body>
+</html>
